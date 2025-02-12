@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import 'package:na_todo/core/constants/color_constants.dart';
+
+class TodoPage extends StatelessWidget {
+  const TodoPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ColorsConstants.greyColor,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 56),
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 26),
+              child: Text(
+                'NA Todo List',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.fromLTRB(16, 62, 16, 70),
+                shrinkWrap: true,
+                itemCount: 12,
+                itemBuilder: (context, index) {
+                  return _listItem();
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 26, 26),
+                child: FloatingActionButton(
+                  onPressed: () {},
+                  child: Icon(Icons.add_rounded),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _listItem() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: ColorsConstants.whiteColor,
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      child: Row(
+        children: [
+          Column(
+            children: [
+              Text('25'),
+              Text('Jan'),
+            ],
+          ),
+          SizedBox(width: 20),
+          Expanded(
+            child: Text(
+                'Janlooerammmmispsumhaiving datadafdasjdfasdljkapewiomfamdhuiopoimehakdfklj'),
+          ),
+          SizedBox(width: 20),
+          Checkbox(value: true, onChanged: (val) {}),
+        ],
+      ),
+    );
+  }
+}
