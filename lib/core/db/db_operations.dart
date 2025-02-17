@@ -1,7 +1,8 @@
 import 'package:hive/hive.dart';
+import 'package:na_todo/todo/models/todo_model.dart';
 
 class DbServices {
-  final Box todoBox;
+  final Box<TodoModel> todoBox;
 
   DbServices({required this.todoBox});
 

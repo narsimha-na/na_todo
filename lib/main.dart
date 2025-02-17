@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:na_todo/core/constants/db_constants.dart';
+import 'package:na_todo/core/db/db_operations.dart';
+import 'package:na_todo/todo/cubit/todo_cubit.dart';
+import 'package:na_todo/todo/db/todo_db_services.dart';
+import 'package:na_todo/todo/models/todo_model.dart';
 import 'package:na_todo/todo/todo_page.dart';
 
 Future<void> main() async {
@@ -15,8 +20,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TodoPage(),
+    return BlocProvider(
+      create: (context) => TodoCubit(
+        dbServices: TodoDbServices(
+          dbServices: DbServices(todoBox: Hive.box(DbConstants.dbName)),
+        ),
+      ),
+      child: const MaterialApp(
+        home: Scaffold(body: TodoPage()),
+      ),
     );
   }
 }

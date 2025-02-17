@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'todo_model.g.dart';
@@ -10,12 +11,15 @@ class TodoModel {
   final String message;
 
   @HiveField(2)
-  final int createdAt;
+  final DateTime createdAt;
 
   @HiveField(3)
-  final int remindAt;
+  final TimeOfDay remindAtTime;
 
   @HiveField(4)
+  final DateTime remindAtDate;
+
+  @HiveField(5)
   bool isChecked;
 
   TodoModel({
@@ -23,7 +27,8 @@ class TodoModel {
     required this.message,
     required this.createdAt,
     this.isChecked = false,
-    required this.remindAt,
+    required this.remindAtDate,
+    required this.remindAtTime,
   });
 
   factory TodoModel.fromJson(Map<String, dynamic> jsonData) {
@@ -31,8 +36,9 @@ class TodoModel {
       id: jsonData['id'],
       message: jsonData['message'],
       createdAt: jsonData['created_at'],
-      isChecked: jsonData['remind_at'],
-      remindAt: jsonData['is_checked'],
+      isChecked: jsonData['is_checked'],
+      remindAtDate: jsonData['remind_at_date'],
+      remindAtTime: jsonData['remind_at_time'],
     );
   }
 
@@ -41,7 +47,8 @@ class TodoModel {
       'id': id,
       'name': message,
       'created_at': createdAt,
-      'remind_at': remindAt,
+      'remind_at_date': remindAtDate,
+      'remind_at_time': remindAtTime,
       'is_checked': isChecked,
     };
   }

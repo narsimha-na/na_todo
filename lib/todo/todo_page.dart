@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:na_todo/core/constants/color_constants.dart';
+import 'package:na_todo/todo/widgets/create_todo_widget.dart';
 
 class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
@@ -8,39 +9,36 @@ class TodoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorsConstants.greyColor,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 56),
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 26),
-              child: Text(
-                'NA Todo List',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 26, top: 56),
+            child: Text(
+              'NA Todo List',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.fromLTRB(16, 62, 16, 70),
-                shrinkWrap: true,
-                itemCount: 12,
-                itemBuilder: (context, index) {
-                  return _listItem();
+          ),
+          ListView.builder(
+            padding: EdgeInsets.fromLTRB(16, 122, 16, 70),
+            shrinkWrap: true,
+            itemCount: 12,
+            itemBuilder: (context, index) {
+              return _listItem();
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 26, 26),
+              child: FloatingActionButton(
+                onPressed: () {
+                  _openBottonSheet(context: context);
                 },
+                child: Icon(Icons.add_rounded),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 26, 26),
-                child: FloatingActionButton(
-                  onPressed: () {},
-                  child: Icon(Icons.add_rounded),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -71,5 +69,18 @@ class TodoPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _openBottonSheet({
+    required BuildContext context,
+  }) {
+    showBottomSheet(
+        context: context,
+        showDragHandle: true,
+        builder: (context) {
+          return CreateTodoWidget(
+            model: null,
+          );
+        });
   }
 }

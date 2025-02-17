@@ -7,11 +7,25 @@ class TodoDbServices {
   final DbServices dbServices;
   TodoDbServices({required this.dbServices});
 
-  Future<List<TodoModel>> saveTodoList({required TodoModel val}) async {
-    List<TodoModel> _list = await dbServices.getData(key: DbConstants.todoList);
-    _list.add(val);
-    await dbServices.saveData(key: DbConstants.todoList, val: _list);
-    return _list;
+  Future<List<TodoModel>> saveTodo({required TodoModel val}) async {
+    try {
+      List<TodoModel> list =
+          await dbServices.getData(key: DbConstants.todoList);
+      list.add(val);
+      await dbServices.saveData(key: DbConstants.todoList, val: list);
+      return list;
+    } catch (e) {
+      throw Exception("Somthing went wrong, please try again");
+    }
+  }
+
+  Future<List<TodoModel>> saveTodoList({required List<TodoModel> list}) async {
+    try {
+      await dbServices.saveData(key: DbConstants.todoList, val: list);
+      return list;
+    } catch (e) {
+      throw Exception("Somthing went wrong, please try again");
+    }
   }
 
   Future<List<TodoModel>> getTodoList() async {

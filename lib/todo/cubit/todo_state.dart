@@ -10,11 +10,19 @@ class TodoLoading extends TodoState {
 }
 
 class TodoValue extends TodoState {
-  final Future<List<TodoModel>> todoList;
+  final List<TodoModel> todoList;
 
   TodoValue({required this.todoList});
 }
 
-class TodoSucess extends TodoState {}
+class TodoSucess extends TodoState {
+  String message;
 
-class TodoFailure extends TodoState {}
+  TodoSucess({required this.message});
+}
+
+class TodoFailure extends TodoState {
+  String message;
+
+  TodoFailure({required this.message});
+}

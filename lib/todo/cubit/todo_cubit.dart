@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:na_todo/todo/db/todo_db_services.dart';
 import 'package:na_todo/todo/models/todo_model.dart';
@@ -9,29 +10,66 @@ class TodoCubit extends Cubit<TodoState> {
 
   TodoCubit({required this.dbServices}) : super(TodoInitialState());
 
-  void saveTodo({required TodoModel data}) {
+  void saveTodo({
+    required String message,
+    required DateTime date,
+    required TimeOfDay time,
+  }) async {
     emit(TodoLoading(loading: true));
+    if (message.isEmpty) {
+      emit(TodoFailure(message: "enter your todo message"));
+    }
 
-    emit(TodoValue(todoList: dbServices.saveTodoList(val: data)));
+    try {
+      List<TodoModel> list = await dbServices.saveTodo(
+          val: TodoModel(
+        id: 0,
+        message: message,
+        createdAt: DateTime.now(),
+        remindAtDate: date,
+        remindAtTime: time,
+      ));
+
+      emit(TodoValue(todoList: list));
+    } catch (e) {
+      emit(TodoFailure(message: e.toString()));
+    }
   }
 
-  void getTodos() {
-    emit(TodoValue(todoList: dbServices.getTodoList()));
+  void getTodos() async {
+    emit(TodoLoading(loading: true));
+    try {
+      List<TodoModel> list = await dbServices.getTodoList();
+
+      emit(TodoValue(todoList: list));
+    } catch (e) {
+      emit(TodoFailure(message: e.toString()));
+    }
   }
 
-  void deleteTodo() {
-    emit(TodoInitialState());
+  void deleteTodo() async {
+    try {
+      await dbServices.deleteTodoList();
+      emit(TodoValue(todoList: []));
+    } catch (e) {
+      emit(TodoFailure(message: e.toString()));
+    }
   }
 
   void checkBox({required bool val, required int id}) async {
-    List<TodoModel> _list = await dbServices.getTodoList();
-    for (var item in _list) {
-      if (item.id == id) {
-        item.isChecked = val;
-        emit(TodoSucess());
-        return;
+    try {
+      List<TodoModel> list = await dbServices.getTodoList();
+      for (var item in list) {
+        if (item.id == id) {
+          item.isChecked = val;
+          return;
+        }
       }
+
+      dbServices.saveTodoList(list: list);
+      TodoValue(todoList: list);
+    } catch (e) {
+      emit(TodoFailure(message: e.toString()));
     }
-    emit(TodoFailure());
   }
 }
