@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:na_todo/core/constants/color_constants.dart';
 import 'package:na_todo/core/constants/general_functions.dart';

@@ -11,19 +11,23 @@ import 'package:na_todo/todo/todo_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox(DbConstants.dbName);
-  runApp(const MainApp());
+  Hive.registerAdapter(TodoAdapter());
+  Hive.registerAdapter(TimeOfDayAdapter());
+  final todoBox = await Hive.openBox<List<TodoModel>>(DbConstants.dbName);
+  runApp(MainApp(todoBox));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  const MainApp(this.todoBox, {super.key});
+
+  final Box<List<TodoModel>> todoBox;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TodoCubit(
-        dbServices: TodoDbServices(
-          dbServices: DbServices(todoBox: Hive.box(DbConstants.dbName)),
+        todoDbServices: TodoDbServices(
+          dbOperations: DbOperations(todoBox: todoBox),
         ),
       ),
       child: const MaterialApp(

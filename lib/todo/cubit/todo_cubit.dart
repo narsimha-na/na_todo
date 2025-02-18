@@ -6,9 +6,9 @@ import 'package:na_todo/todo/models/todo_model.dart';
 part 'todo_state.dart';
 
 class TodoCubit extends Cubit<TodoState> {
-  final TodoDbServices dbServices;
+  final TodoDbServices todoDbServices;
 
-  TodoCubit({required this.dbServices}) : super(TodoInitialState());
+  TodoCubit({required this.todoDbServices}) : super(TodoInitialState());
 
   void saveTodo({
     required String message,
@@ -20,26 +20,23 @@ class TodoCubit extends Cubit<TodoState> {
       emit(TodoFailure(message: "enter your todo message"));
     }
 
-    try {
-      List<TodoModel> list = await dbServices.saveTodo(
-          val: TodoModel(
-        id: 0,
-        message: message,
-        createdAt: DateTime.now(),
-        remindAtDate: date,
-        remindAtTime: time,
-      ));
+    // try {
+    List<TodoModel> list = await todoDbServices.saveTodo(
+      message: message,
+      remindAtDate: date,
+      remindAtTime: time,
+    );
 
-      emit(TodoValue(todoList: list));
-    } catch (e) {
-      emit(TodoFailure(message: e.toString()));
-    }
+    emit(TodoValue(todoList: list));
+    // } catch (e) {
+    //   emit(TodoFailure(message: e.toString()));
+    // }
   }
 
   void getTodos() async {
     emit(TodoLoading(loading: true));
     try {
-      List<TodoModel> list = await dbServices.getTodoList();
+      List<TodoModel> list = await todoDbServices.getTodoList();
 
       emit(TodoValue(todoList: list));
     } catch (e) {
@@ -49,7 +46,7 @@ class TodoCubit extends Cubit<TodoState> {
 
   void deleteTodo() async {
     try {
-      await dbServices.deleteTodoList();
+      await todoDbServices.deleteAll();
       emit(TodoValue(todoList: []));
     } catch (e) {
       emit(TodoFailure(message: e.toString()));
@@ -58,7 +55,7 @@ class TodoCubit extends Cubit<TodoState> {
 
   void checkBox({required bool val, required int id}) async {
     try {
-      List<TodoModel> list = await dbServices.getTodoList();
+      List<TodoModel> list = await todoDbServices.getTodoList();
       for (var item in list) {
         if (item.id == id) {
           item.isChecked = val;
@@ -66,7 +63,7 @@ class TodoCubit extends Cubit<TodoState> {
         }
       }
 
-      dbServices.saveTodoList(list: list);
+      todoDbServices.saveTodoList(list: list);
       TodoValue(todoList: list);
     } catch (e) {
       emit(TodoFailure(message: e.toString()));
